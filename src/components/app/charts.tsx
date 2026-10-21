@@ -11,6 +11,16 @@ type Fmt = "number" | "eur" | "pct";
 const fmtValue = (v: number, f: Fmt) => (f === "eur" ? formatEUR(v) : f === "pct" ? `${formatNumber(v, 1)} %` : formatNumber(v, 1));
 const fmtAxis = (v: number, f: Fmt) => (f === "eur" ? formatEURCompact(v) : f === "pct" ? `${formatNumber(v, 0)} %` : formatNumber(v, 0));
 
+/** Techo mínimo del eje para que una serie a cero no repita «0 €» en todas las marcas */
+const minTop = (f: Fmt) => (f === "eur" ? 10000 : f === "pct" ? 10 : 4);
+/** Redondea el techo del eje a 1, 2, 2,5 o 5 × 10ⁿ para que las marcas sean números redondos */
+const niceCeil = (v: number) => {
+  if (v <= 0) return 1;
+  const e = 10 ** Math.floor(Math.log10(v));
+  for (const m of [1, 2, 2.5, 5, 10]) if (v <= m * e) return m * e;
+  return 10 * e;
+};
+
 const axis = { stroke: "var(--ink-faint)", fontSize: 11, tickLine: false, axisLine: false } as const;
 
 function TooltipBox({ active, payload, label, format }: { active?: boolean; payload?: { name: string; value: number | null; color: string }[]; label?: string; format: Fmt }) {
@@ -57,9 +67,9 @@ export function BarSeriesChart({
         <BarChart data={data} margin={{ top: 8, right: 4, bottom: 0, left: 0 }} barGap={2} barCategoryGap="22%">
           <CartesianGrid vertical={false} stroke="var(--line)" />
           <XAxis dataKey={xKey} {...axis} interval="preserveStartEnd" minTickGap={8} />
-          <YAxis {...axis} width={format === "eur" ? 56 : 32} tickFormatter={(v) => fmtAxis(v, format)} allowDecimals={false} />
+          <YAxis {...axis} width={format === "eur" ? 60 : 36} tickFormatter={(v) => fmtAxis(v, format)} allowDecimals={false} domain={[0, (max: number) => niceCeil(Math.max(max, minTop(format)))]} />
           <Tooltip cursor={{ fill: "var(--sunken)" }} content={<TooltipBox format={format} />} />
-          {series.length > 1 && <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "var(--ink-muted)" }} />}
+          {series.length > 1 && <Legend itemSorter={null} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "var(--ink-muted)" }} />}
           {target != null && target > 0 && <ReferenceLine y={target} stroke="var(--ink-muted)" strokeDasharray="4 4" label={{ value: "Objetivo", position: "insideTopRight", fontSize: 11, fill: "var(--ink-muted)" }} />}
           {series.map((s, i) => (
             <Bar key={s.key} dataKey={s.key} name={s.name} fill={COLORS[i]} radius={[4, 4, 0, 0]} maxBarSize={28} />
@@ -83,15 +93,22 @@ export function LineSeriesChart({
   format?: Fmt;
   height?: number;
 }) {
+  if (data.every((d) => series.every((s) => d[s.key] == null))) {
+    return (
+      <div style={{ height }} className="grid place-items-center text-sm text-ink-muted">
+        Datos insuficientes para dibujar la evolución
+      </div>
+    );
+  }
   return (
     <div style={{ height }} role="img" aria-label={series.map((s) => s.name).join(", ")}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid vertical={false} stroke="var(--line)" />
           <XAxis dataKey={xKey} {...axis} interval="preserveStartEnd" minTickGap={8} />
-          <YAxis {...axis} width={format === "eur" ? 56 : 36} tickFormatter={(v) => fmtAxis(v, format)} />
+          <YAxis {...axis} width={format === "eur" ? 60 : 46} tickFormatter={(v) => fmtAxis(v, format)} domain={[0, (max: number) => niceCeil(Math.max(max, minTop(format)))]} />
           <Tooltip cursor={{ stroke: "var(--line-strong)" }} content={<TooltipBox format={format} />} />
-          {series.length > 1 && <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "var(--ink-muted)" }} />}
+          {series.length > 1 && <Legend itemSorter={null} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "var(--ink-muted)" }} />}
           {series.map((s, i) => (
             <Line
               key={s.key}

@@ -21,6 +21,8 @@ import { ProgressBar } from "@/components/app/hbars";
 import { ChangeLabel } from "@/components/app/kpi";
 import { MonthPicker, OrderStatusFilter, SnapshotButton, SettleButton } from "./controls";
 
+import { plural } from "@/lib/utils";
+
 export const metadata: Metadata = { title: "Pedidos y ventas" };
 
 export default async function SalesPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
@@ -60,11 +62,11 @@ export default async function SalesPage({ searchParams }: { searchParams: Promis
 
   const separate: [string, string, string][] = [
     ["Pedidos registrados", `${r.registered.count}`, formatEUR(r.registered.totalCents)],
-    ["Ventas confirmadas", formatEUR(r.confirmed.baseCents), `${r.confirmed.count} pedidos · base imponible`],
-    ["Ventas entregadas", formatEUR(r.delivered.baseCents), `${r.delivered.count} pedidos`],
+    ["Ventas confirmadas", formatEUR(r.confirmed.baseCents), `${plural(r.confirmed.count, "pedido")} · base imponible`],
+    ["Ventas entregadas", formatEUR(r.delivered.baseCents), plural(r.delivered.count, "pedido")],
     ["Facturación emitida", formatEUR(r.invoiced.baseCents), `IVA ${formatEUR(r.invoiced.vatCents)} · total ${formatEUR(r.invoiced.totalCents)}`],
-    ["Importes cobrados", formatEUR(r.collected.totalCents), `${r.collected.count} cobros (IVA incl.)`],
-    ["Devoluciones", formatEUR(r.returns.baseCents), `${r.returns.count} abonos · base imponible`],
+    ["Importes cobrados", formatEUR(r.collected.totalCents), `${plural(r.collected.count, "cobro")} (IVA incl.)`],
+    ["Devoluciones", formatEUR(r.returns.baseCents), `${plural(r.returns.count, "abono")} · base imponible`],
   ];
   const snapshots = (snaps.data ?? []) as CommissionCalculation[];
 
@@ -104,7 +106,7 @@ export default async function SalesPage({ searchParams }: { searchParams: Promis
                 <p className="text-[13px] text-ink-muted">Ventas computables</p>
                 <p className="num text-[34px] leading-tight font-semibold tracking-[-0.03em]">{formatEUR(r.computable.netCents)}</p>
                 <p className="mt-1 flex flex-wrap items-center gap-2 text-[13px] text-ink-muted">
-                  <ChangeLabel change={compare(r.computable.netCents, previous.revenue.computable.netCents)} />
+                  <ChangeLabel change={compare(r.computable.netCents, previous.revenue.computable.netCents)} deltaFormat={formatEUR} />
                   <span>frente a {monthLabel(previous.monthStart).toLowerCase()}</span>
                 </p>
                 {cm.next ? (
@@ -196,7 +198,7 @@ export default async function SalesPage({ searchParams }: { searchParams: Promis
       <Card>
         <CardHeader
           title="Pedidos del mes"
-          description={`${monthOrders.length} pedidos`}
+          description={plural(monthOrders.length, "pedido")}
           action={
             <div className="flex items-center gap-2">
               <OrderStatusFilter value={statusFilter ?? ""} />
@@ -268,7 +270,7 @@ export default async function SalesPage({ searchParams }: { searchParams: Promis
                     <td className="num py-2 text-right">{formatEUR(Number(s.returns_cents))}</td>
                     <td className="num py-2 text-right">{formatEUR(Number(s.base_cents))}</td>
                     <td className="py-2">
-                      {s.method === "flat" ? "Sobre todo" : "Marginal"} · {s.tier_label} ({formatPercentBp(s.rate_bp)}) · {s.order_ids.length} pedidos
+                      {s.method === "flat" ? "Sobre todo" : "Marginal"} · {s.tier_label} ({formatPercentBp(s.rate_bp)}) · {plural(s.order_ids.length, "pedido")}
                       {s.is_provisional && <span className="text-warning"> · provisional</span>}
                     </td>
                     <td className="num py-2 text-right font-medium">{formatEUR(Number(s.amount_cents))}</td>

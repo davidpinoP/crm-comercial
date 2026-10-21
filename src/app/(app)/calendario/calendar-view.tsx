@@ -142,6 +142,7 @@ export function CalendarView() {
           plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
           locale={esLocale}
           timeZone="UTC"
+          now={() => wall(new Date().toISOString())}
           initialView={isMobile ? "listWeek" : "timeGridWeek"}
           headerToolbar={{ left: "prev,next today", center: "title", right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek" }}
           buttonText={{ today: "Hoy", month: "Mes", week: "Semana", day: "Día", list: "Agenda" }}

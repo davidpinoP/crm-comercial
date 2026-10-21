@@ -227,7 +227,7 @@ export function OrderForm({
                 <Field label="Cant." htmlFor={`q-${l.key}`} className="col-span-2 lg:col-span-1">
                   <Input id={`q-${l.key}`} inputMode="decimal" value={l.quantity} onChange={(e) => update(l.key, { quantity: e.target.value })} />
                 </Field>
-                <Field label="Precio (€)" htmlFor={`u-${l.key}`} className="col-span-4 lg:col-span-2">
+                <Field label="Precio (€)" htmlFor={`u-${l.key}`} className="col-span-4 lg:col-span-1">
                   <Input id={`u-${l.key}`} inputMode="decimal" value={l.unit_price} placeholder="0,00" onChange={(e) => update(l.key, { unit_price: e.target.value })} />
                 </Field>
                 <Field label="Dto. %" htmlFor={`x-${l.key}`} className="col-span-2 lg:col-span-1">
@@ -236,7 +236,7 @@ export function OrderForm({
                 <Field label="IVA %" htmlFor={`v-${l.key}`} className="col-span-2 lg:col-span-1">
                   <Input id={`v-${l.key}`} inputMode="decimal" value={l.vat} onChange={(e) => update(l.key, { vat: e.target.value })} />
                 </Field>
-                <div className="col-span-2 flex items-center justify-end gap-1 lg:col-span-1 lg:h-10">
+                <div className="col-span-2 flex items-center justify-end gap-1 lg:col-span-2 lg:h-10">
                   <span className="num text-sm font-medium" title="Base imponible de la línea">
                     {a ? formatEUR(a.baseCents) : <span className="text-negative">—</span>}
                   </span>

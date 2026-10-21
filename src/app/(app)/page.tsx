@@ -259,8 +259,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           <CardBody className="space-y-4 pt-3 text-sm">
             <ActionGroup icon={<CalendarClock />} title="Visitas de hoy" empty="Nada programado para hoy." href="/calendario">
               {todayEvents.map((e) => (
-                <li key={e.id} className="flex gap-2">
-                  <span className="num text-ink-muted">{madridTime(e.starts_at)}</span>
+                <li key={e.id} className="flex min-w-0 gap-2">
+                  <span className="num shrink-0 text-ink-muted">{madridTime(e.starts_at)}</span>
                   <Link href={e.customer ? `/clientes/${e.customer.id}` : "/calendario"} className="truncate hover:underline">
                     {e.customer?.trade_name ?? e.title}
                   </Link>
@@ -269,8 +269,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             </ActionGroup>
             <ActionGroup icon={<ClipboardList />} title={`Seguimientos vencidos${overdue.length ? ` (${overdue.length})` : ""}`} empty="Ninguno vencido." href="/seguimientos?filtro=vencidos" tone="negative" show={overdue.length > 0}>
               {overdue.slice(0, 4).map((f) => (
-                <li key={f.id} className="flex gap-2">
-                  <span className="num text-negative">{relativeDayLabel(f.due_date!, today)}</span>
+                <li key={f.id} className="flex min-w-0 gap-2">
+                  <span className="num shrink-0 whitespace-nowrap text-negative">{formatDate(f.due_date!).slice(0, 5)}</span>
                   <Link href={`/clientes/${f.customer_id}`} className="truncate hover:underline">
                     {f.customer?.trade_name} · {FOLLOW_UP_TYPE_LABEL[f.follow_up_type]}
                   </Link>
@@ -279,8 +279,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             </ActionGroup>
             <ActionGroup icon={<ClipboardList />} title="Seguimientos para hoy" empty="Ninguno para hoy." href="/seguimientos">
               {dueToday.slice(0, 4).map((f) => (
-                <li key={f.id}>
-                  <Link href={`/clientes/${f.customer_id}`} className="truncate hover:underline">
+                <li key={f.id} className="truncate">
+                  <Link href={`/clientes/${f.customer_id}`} className="hover:underline">
                     {f.customer?.trade_name} · {FOLLOW_UP_TYPE_LABEL[f.follow_up_type]}
                   </Link>
                 </li>

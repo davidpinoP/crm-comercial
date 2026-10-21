@@ -110,15 +110,15 @@ async function WeeklyPlan({ offset }: { offset: number }) {
               <dl className="mt-3 grid grid-cols-3 gap-2 text-center text-[12px] text-ink-muted">
                 <div className="rounded-lg bg-sunken py-1.5">
                   <dd className="num text-[15px] font-semibold text-ink">{z?.daily_prospecting_target ?? "—"}</dd>
-                  <dt>Objetivo puertas</dt>
+                  <dt className="truncate px-1" title="Objetivo de puertas frías de la zona">Puertas</dt>
                 </div>
                 <div className="rounded-lg bg-sunken py-1.5">
                   <dd className="num text-[15px] font-semibold text-ink">{dayEvents.length}</dd>
-                  <dt>Citas</dt>
+                  <dt className="truncate px-1">Citas</dt>
                 </div>
                 <div className="rounded-lg bg-sunken py-1.5">
                   <dd className="num text-[15px] font-semibold text-ink">{dayFu.length}</dd>
-                  <dt>Seguimientos</dt>
+                  <dt className="truncate px-1" title="Seguimientos previstos">Seguim.</dt>
                 </div>
               </dl>
               {working && dayMinutes > 0 && (

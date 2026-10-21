@@ -261,7 +261,7 @@ export default async function StatsPage({ searchParams }: { searchParams: Promis
       <h2 className="mt-6 mb-2 text-[13px] font-medium text-ink-muted">Productividad</h2>
       <KpiGrid className="grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
         <Kpi label="Puertas por día trabajado" value={fmtAvg(average(s.prospecting.coldCalls, days.length), "")} hint={`${days.length} días laborables`} />
-        <Kpi label="Puertas por hora" value={hours.recorded ? fmtAvg(average(s.prospecting.coldCalls, hours.hours), "") : "Sin registro de horas"} hint="Requiere registrar horas trabajadas en Objetivos → Calendario laboral" />
+        <Kpi label="Puertas por hora" value={hours.recorded ? fmtAvg(average(s.prospecting.coldCalls, hours.hours), "") : "Sin horas registradas"} hint="Requiere registrar horas trabajadas en Objetivos → Calendario laboral" />
         <Kpi label="Contactos por día" value={fmtAvg(average(s.prospecting.effectiveContacts, days.length), "")} />
         <Kpi label="Visitas por día" value={fmtAvg(average(s.visits.total, days.length), "")} />
         <Kpi label="Pedidos por visita" value={fmtAvg(average(s.validOrders, s.visits.commercial), "", 2)} />

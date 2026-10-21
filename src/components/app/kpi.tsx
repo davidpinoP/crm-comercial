@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 /** Variación frente al periodo anterior, sin porcentajes engañosos cuando el anterior es 0 */
 export function ChangeLabel({ change, className, deltaFormat }: { change: Change; className?: string; deltaFormat?: (n: number) => string }) {
   if (change.kind === "no_data") return <span className={cn("text-ink-faint", className)}>Sin comparativa</span>;
-  if (change.kind === "unchanged_zero") return <span className={cn("text-ink-faint", className)}>Sin actividad en ambos periodos</span>;
+  if (change.kind === "unchanged_zero") return <span className={cn("text-ink-faint", className)} title="Sin actividad en ninguno de los dos periodos">Sin cambios</span>;
   if (change.kind === "from_zero")
     return (
       <span className={cn("inline-flex items-center gap-0.5 text-positive", className)} title="El periodo anterior fue 0: no se calcula porcentaje">
@@ -42,8 +42,8 @@ export function Kpi({
 }) {
   return (
     <div className={cn("bg-paper px-4 py-3.5", className)} title={hint}>
-      <dt className="truncate text-[12px] text-ink-muted">{label}</dt>
-      <dd className={cn("num mt-1 truncate font-semibold tracking-[-0.02em]", value === "Datos insuficientes" ? "text-[13px] text-ink-muted" : "text-[20px]")}>{value}</dd>
+      <dt className="line-clamp-2 text-[12px] leading-snug text-ink-muted xl:min-h-[2lh]">{label}</dt>
+      <dd className={cn("num mt-1 font-semibold tracking-[-0.02em] break-words", /^[−\-+]?[\d.,]/.test(value) ? "text-[19px] leading-tight" : "text-[13px] whitespace-normal text-ink-muted")}>{value}</dd>
       {change && (
         <dd className="mt-0.5 text-[12px]">
           <ChangeLabel change={change} deltaFormat={deltaFormat} />

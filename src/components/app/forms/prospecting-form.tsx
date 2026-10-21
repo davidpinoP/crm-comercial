@@ -34,7 +34,7 @@ const STATUS_RANK: CustomerStatus[] = [
 
 export function ProspectingForm({
   initialCustomer = null,
-  mode: initialMode = "full",
+  mode: initialMode = "quick",
   onDone,
 }: {
   initialCustomer?: PickedCustomer | null;

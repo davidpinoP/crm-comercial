@@ -19,6 +19,8 @@ import { ActivityList } from "@/components/app/activity-list";
 import { CustomerActions } from "./actions";
 import { FollowUpRowActions } from "@/app/(app)/seguimientos/row-actions";
 
+import { plural } from "@/lib/utils";
+
 export const metadata: Metadata = { title: "Ficha de cliente" };
 
 export default async function CustomerPage({ params }: { params: Promise<{ id: string }> }) {
@@ -142,14 +144,14 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
       <div className="grid gap-5 lg:grid-cols-3">
         <div className="space-y-5 lg:col-span-2">
           <Card>
-            <CardHeader title="Prospecciones" description={`${activities.length} registradas`} />
+            <CardHeader title="Prospecciones" description={plural(activities.length, "registrada")} />
             <CardBody>
               {activities.length ? <ActivityList activities={activities} grouped={false} showCustomer={false} /> : <p className="text-sm text-ink-muted">Sin prospecciones registradas.</p>}
             </CardBody>
           </Card>
 
           <Card>
-            <CardHeader title="Visitas realizadas" description={`${visits.length} visitas`} />
+            <CardHeader title="Visitas realizadas" description={plural(visits.length, "visita")} />
             <CardBody className="pt-3">
               {visits.length === 0 ? (
                 <p className="text-sm text-ink-muted">Sin visitas registradas.</p>
@@ -172,7 +174,7 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
           </Card>
 
           <Card>
-            <CardHeader title="Pedidos" description={`${orders.length} pedidos`} />
+            <CardHeader title="Pedidos" description={plural(orders.length, "pedido")} />
             <CardBody className="pt-3">
               {orders.length === 0 ? (
                 <EmptyState title="Sin pedidos" description="Crea el primer pedido con el botón «Crear pedido»." className="py-6" />

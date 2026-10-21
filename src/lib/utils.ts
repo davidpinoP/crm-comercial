@@ -9,3 +9,8 @@ export function cn(...inputs: ClassValue[]) {
 export function newRequestId(): string {
   return crypto.randomUUID();
 }
+
+/** «1 pedido», «3 pedidos» */
+export function plural(n: number, singular: string, pluralForm = `${singular}s`): string {
+  return `${n.toLocaleString("es-ES")} ${n === 1 ? singular : pluralForm}`;
+}
