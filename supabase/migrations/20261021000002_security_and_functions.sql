@@ -282,6 +282,9 @@ begin
             nullif(p_order->>'paid_date','')::date, nullif(p_order->>'visit_id','')::uuid, v_req)
     returning id into v_id;
   else
+    if exists (select 1 from public.order_returns where order_id = v_id) then
+      raise exception 'El pedido tiene devoluciones registradas y sus líneas no se pueden modificar' using errcode = '22023';
+    end if;
     update public.orders set
       customer_id = (p_order->>'customer_id')::uuid,
       order_date = (p_order->>'order_date')::date,

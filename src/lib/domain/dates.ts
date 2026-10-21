@@ -188,3 +188,8 @@ export function relativeDayLabel(date: ISODate, today: ISODate = todayISO()): st
   if (diff < 0) return `Hace ${-diff} días`;
   return `En ${diff} días`;
 }
+
+/** «miércoles» para una fecha de negocio */
+export function WEEKDAY_FULL(date: ISODate): string {
+  return new Intl.DateTimeFormat("es-ES", { weekday: "long", timeZone: "UTC" }).format(parseISO(`${date}T12:00:00Z`));
+}

@@ -5,6 +5,7 @@ import { periodRevenue } from "@/lib/domain/revenue";
 import { computeCommission, type CommissionResult } from "@/lib/domain/commissions";
 import { monthEndISO, type ISODate } from "@/lib/domain/dates";
 import type { Order } from "@/lib/types";
+import { fetchAll } from "./paginate";
 
 export type OrderFull = Order & OrderWithTotals;
 
@@ -50,17 +51,24 @@ export async function attachTotals(ctx: AppContext, orders: Order[]): Promise<Or
 export async function loadOrdersForRange(ctx: AppContext, from: ISODate, to: ISODate): Promise<OrderFull[]> {
   const { supabase } = ctx;
   const [byDates, rets] = await Promise.all([
-    supabase
-      .from("orders")
-      .select("*")
-      .is("deleted_at", null)
-      .or(`and(order_date.gte.${from},order_date.lte.${to}),and(paid_date.gte.${from},paid_date.lte.${to})`),
-    supabase.from("order_returns").select("order_id").gte("return_date", from).lte("return_date", to),
+    fetchAll<Order>(
+      (a, b) =>
+        supabase
+          .from("orders")
+          .select("*")
+          .is("deleted_at", null)
+          .or(`and(order_date.gte.${from},order_date.lte.${to}),and(paid_date.gte.${from},paid_date.lte.${to})`)
+          .order("order_date")
+          .range(a, b),
+      "los pedidos",
+    ),
+    fetchAll<{ order_id: string }>(
+      (a, b) => supabase.from("order_returns").select("order_id").gte("return_date", from).lte("return_date", to).range(a, b),
+      "las devoluciones",
+    ),
   ]);
-  if (byDates.error) throw new Error(`No se han podido cargar los pedidos: ${byDates.error.message}`);
-  if (rets.error) throw new Error(`No se han podido cargar las devoluciones: ${rets.error.message}`);
-  const have = new Set((byDates.data as Order[]).map((o) => o.id));
-  const missing = [...new Set((rets.data as { order_id: string }[]).map((r) => r.order_id))].filter((id) => !have.has(id));
+  const have = new Set(byDates.map((o) => o.id));
+  const missing = [...new Set(rets.map((r) => r.order_id))].filter((id) => !have.has(id));
   let extra: Order[] = [];
   if (missing.length) {
     extra = await chunked(missing, 150, async (chunk) => {
@@ -69,7 +77,7 @@ export async function loadOrdersForRange(ctx: AppContext, from: ISODate, to: ISO
       return data as Order[];
     });
   }
-  return attachTotals(ctx, [...(byDates.data as Order[]), ...extra]);
+  return attachTotals(ctx, [...byDates, ...extra]);
 }
 
 export interface MonthCommission {
