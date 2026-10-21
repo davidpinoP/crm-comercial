@@ -49,7 +49,7 @@ const FALLBACK_SETTINGS = (userId: string): AppSettings => ({
 /** Configuración y catálogos del usuario (una vez por petición) */
 export const getContext = cache(async () => {
   const { supabase, user } = await getAuth();
-  let [settings, profile, types, results, categories, zones, commission, tiers] = await Promise.all([
+  const [settings0, profile, types, results, categories, zones, commission0, tiers] = await Promise.all([
     supabase.from("app_settings").select("*").maybeSingle(),
     supabase.from("profiles").select("*").maybeSingle(),
     supabase.from("establishment_types").select("*").order("sort_order").order("name"),
@@ -60,6 +60,8 @@ export const getContext = cache(async () => {
     supabase.from("commission_tiers").select("*").order("lower_cents"),
   ]);
 
+  let settings = settings0;
+  let commission = commission0;
   // Usuarios creados antes de aplicar las migraciones: crear valores mínimos
   if (!settings.error && !settings.data) {
     await supabase.rpc("ensure_my_defaults");

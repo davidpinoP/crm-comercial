@@ -51,7 +51,7 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
               </Link>
             </Button>
             <Button asChild variant="ghost" size="sm">
-              <a href="/api/exportar/clientes">
+              <a href="/api/exportar/clientes" download>
                 <Download />
                 CSV
               </a>
