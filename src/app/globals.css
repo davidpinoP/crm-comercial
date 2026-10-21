@@ -1,26 +1,244 @@
 @import "tailwindcss";
+@import "@fontsource-variable/instrument-sans";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Tokens de diseño
+ *  paper/canvas  superficies blanca y gris muy suave
+ *  ink           texto principal; ink-muted para secundario
+ *  line          bordes discretos
+ *  accent        burdeos «laca» para la acción principal (mundo cosmético)
+ *  positive / warning / negative / progress  estados
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --paper: #ffffff;
+  --canvas: #f5f5f3;
+  --sunken: #efefec;
+  --ink: #1d1e20;
+  --ink-muted: #6a6d73;
+  --ink-faint: #9a9da2;
+  --line: #e4e4e0;
+  --line-strong: #d3d3ce;
+  --accent: #8c2f55;
+  --accent-hover: #772446;
+  --accent-soft: #f6eaef;
+  --accent-ink: #ffffff;
+  --positive: #2f7a5b;
+  --positive-soft: #e8f3ee;
+  --warning: #9a6211;
+  --warning-soft: #faf1e3;
+  --negative: #b4392f;
+  --negative-soft: #fbecea;
+  --progress: #3a5a8c;
+  --progress-soft: #ebf0f7;
+  --chart-1: #8c2f55;
+  --chart-2: #5b7183;
+  --chart-3: #7fa08a;
+  --chart-4: #c9a66b;
+  --chart-5: #b9b9b3;
+  --shadow-card: 0 1px 2px rgb(29 30 32 / 0.04);
+  --shadow-pop: 0 8px 28px rgb(29 30 32 / 0.10), 0 1px 3px rgb(29 30 32 / 0.06);
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --paper: #1b1c1e;
+    --canvas: #141516;
+    --sunken: #222326;
+    --ink: #ececea;
+    --ink-muted: #a2a5aa;
+    --ink-faint: #74777c;
+    --line: #2e2f32;
+    --line-strong: #3b3c40;
+    --accent: #d77ea2;
+    --accent-hover: #e494b4;
+    --accent-soft: #3a2230;
+    --accent-ink: #1b1c1e;
+    --positive: #6cc39b;
+    --positive-soft: #1d3329;
+    --warning: #e0aa5a;
+    --warning-soft: #3a2e1c;
+    --negative: #ec8077;
+    --negative-soft: #3d2120;
+    --progress: #8eaedf;
+    --progress-soft: #1f2a3c;
+    --chart-1: #d77ea2;
+    --chart-2: #8fa6b8;
+    --chart-3: #8fbd9d;
+    --chart-4: #d9b77c;
+    --chart-5: #55575c;
+    --shadow-card: 0 0 0 transparent;
+    --shadow-pop: 0 10px 30px rgb(0 0 0 / 0.45);
+    color-scheme: dark;
   }
 }
 
+:root[data-theme="dark"] {
+  --paper: #1b1c1e;
+  --canvas: #141516;
+  --sunken: #222326;
+  --ink: #ececea;
+  --ink-muted: #a2a5aa;
+  --ink-faint: #74777c;
+  --line: #2e2f32;
+  --line-strong: #3b3c40;
+  --accent: #d77ea2;
+  --accent-hover: #e494b4;
+  --accent-soft: #3a2230;
+  --accent-ink: #1b1c1e;
+  --positive: #6cc39b;
+  --positive-soft: #1d3329;
+  --warning: #e0aa5a;
+  --warning-soft: #3a2e1c;
+  --negative: #ec8077;
+  --negative-soft: #3d2120;
+  --progress: #8eaedf;
+  --progress-soft: #1f2a3c;
+  --chart-1: #d77ea2;
+  --chart-2: #8fa6b8;
+  --chart-3: #8fbd9d;
+  --chart-4: #d9b77c;
+  --chart-5: #55575c;
+  --shadow-card: 0 0 0 transparent;
+  --shadow-pop: 0 10px 30px rgb(0 0 0 / 0.45);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --color-paper: var(--paper);
+  --color-canvas: var(--canvas);
+  --color-sunken: var(--sunken);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-negative: var(--negative);
+  --color-negative-soft: var(--negative-soft);
+  --color-progress: var(--progress);
+  --color-progress-soft: var(--progress-soft);
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+  --radius-card: 12px;
+  --radius-field: 9px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Cifras alineadas en tablas y métricas */
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Espacio para la navegación inferior en móvil, respetando el área segura */
+.pb-safe-nav {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+}
+@media (min-width: 1024px) {
+  .pb-safe-nav {
+    padding-bottom: 2.5rem;
+  }
+}
+
+/* FullCalendar con los tokens de la app */
+.fc {
+  --fc-border-color: var(--line);
+  --fc-page-bg-color: var(--paper);
+  --fc-neutral-bg-color: var(--sunken);
+  --fc-today-bg-color: var(--accent-soft);
+  --fc-button-bg-color: var(--paper);
+  --fc-button-border-color: var(--line-strong);
+  --fc-button-text-color: var(--ink);
+  --fc-button-hover-bg-color: var(--sunken);
+  --fc-button-hover-border-color: var(--line-strong);
+  --fc-button-active-bg-color: var(--ink);
+  --fc-button-active-border-color: var(--ink);
+  --fc-event-border-color: transparent;
+  --fc-list-event-hover-bg-color: var(--sunken);
+  font-size: 0.875rem;
+}
+.fc .fc-button {
+  font-weight: 500;
+  text-transform: none;
+  border-radius: 8px;
+  padding: 0.35rem 0.7rem;
+  box-shadow: none !important;
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+  color: var(--paper);
+}
+.fc .fc-toolbar-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.fc .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-number {
+  color: var(--ink-muted);
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.fc-event {
+  cursor: pointer;
+  border-radius: 6px !important;
+  padding: 1px 4px;
+}
+.fc .fc-list-day-cushion {
+  text-transform: capitalize;
+}
+@media (max-width: 640px) {
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  .fc .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes sheet-up {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
