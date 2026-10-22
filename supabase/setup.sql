@@ -635,7 +635,6 @@ begin
     'commission_settings','commission_tiers','commission_calculations','sales_goals','workdays']
   loop
     execute format('alter table public.%I enable row level security', t);
-    execute format('alter table public.%I force row level security', t);
     execute format('create policy %I on public.%I for all to authenticated
                     using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()))',
                    t || '_owner', t);
